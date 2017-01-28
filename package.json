@@ -1,0 +1,17 @@
+{
+  "name": "node-peek",
+  "version": "1.0.0",
+  "description": "REPL add-on for debugging and benchmarking Node applications.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kyle Edwards <edwards.kyle.a@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "heapdump": "^0.3.7"
+  },
+  "bin": {
+    "repl": "./bin/repl.js"
+  }
+}

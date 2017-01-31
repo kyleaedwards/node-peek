@@ -10,36 +10,31 @@ npm install --save-dev node-peek
 ## Setup
 
 ```
-require('node-peek');
-
-/* Check if REPL exists. */
-if (__replExists__) {
-  // Do something.
-}
+const Peek = require('node-peek');
 
 /* Make variables accessible to REPL. */
-setREPLContext('key', value);
-setREPLContext({
+Peek.setContext('key', value);
+Peek.setContext({
   anotherKey: anotherValue
 });
 
 /* Close REPL */
-closeREPL();
+Peek.close();
 
 /* Change REPL prompt prefix. */
 // Before: $ repl >
-setREPLPrompt('my-own-repl');
+Peek.setPrompt('my-own-repl');
 // After: $ my-own-repl >
 
 /* Define custom REPL commands, identical to built-in REPL API. */
-defineREPLCommand('savestate', () => {
+Peek.defineCommand('savestate', () => {
   fs.writeFile('/tmp/statefile.json', JSON.stringify(state), () => {
     this.outputStream.write('State saved!');
   });
 });
 ```
 
-## Usage
+## Using the REPL
 
 ```
 $ ./node_modules/.bin/repl
@@ -58,6 +53,7 @@ $ External: 8750
 * **.gc**: Forces garbage collection.
 * **.hdump**: Forces a heapdump to the /tmp directory.
 * **.hsize**: Outputs the current heap stats in bytes.
+* **.hcsv**: Call once to begin reading intermittent benchmarking data into a CSV file, call again to stop.
 
 ## Special Thanks to
 

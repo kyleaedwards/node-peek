@@ -4,7 +4,8 @@
   "description": "REPL add-on for debugging and benchmarking Node applications.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ."
   },
   "author": "Kyle Edwards <edwards.kyle.a@gmail.com>",
   "license": "MIT",
@@ -13,5 +14,9 @@
   },
   "bin": {
     "repl": "./bin/repl.js"
+  },
+  "devDependencies": {
+    "eslint": "^3.14.1",
+    "eslint-config-airbnb-base": "^11.0.1"
   }
 }

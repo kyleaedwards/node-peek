@@ -23,58 +23,57 @@ const sock = 'repl.sock';
 const useREPL = !!process.argv.slice(2).filter(n => n === '--repl').length;
 const context = {};
 const noop = () => {};
-
-let options = {
-  prompt: `repl > `,
+const options = {
+  prompt: 'repl > ',
   terminal: true,
   useGlobal: false,
   ignoreUndefined: true,
 };
+
 let sockets = [];
 let repls = [];
 
 if (useREPL) {
-
   const server = net.createServer((socket) => {
     // On socket connection, create a new REPL instance
     // with the currently held options.
-    const r = repl.start(Object.assign({}, options, {
+    const rpl = repl.start(Object.assign({}, options, {
       input: socket,
       output: socket,
     }));
-    r._name = options.name || 'repl';
+    rpl.promptName = options.name || 'repl';
 
     // On socket connection, create a new REPL instance
     // with the currently held options.
     Object.keys(context).forEach((key) => {
       const val = context[key];
-      r.context[key] = typeof val === 'function' ? val.bind(r.context) : val;
+      rpl.context[key] = typeof val === 'function' ? val.bind(rpl.context) : val;
     });
 
     // Add existing registered commands.
-    Object.keys(commands).forEach(cmd => r.defineCommand(cmd, commands[cmd]));
+    Object.keys(commands).forEach(cmd => rpl.defineCommand(cmd, commands[cmd]));
 
     // On exit, disconnect the REPL socket.
-    r.on('exit', () => {
+    rpl.on('exit', () => {
       socket.end();
       sockets = sockets.filter(s => s !== socket);
-      repls = repls.filter(repl => repl !== r);
+      repls = repls.filter(r => r !== rpl);
     });
 
     // Add the REPL and socket to the active sets.
-    repls.push(repl);
+    repls.push(rpl);
     sockets.push(socket);
   }).listen(sock);
 
   // Unlink an existing Unix socket if it exists.
-  server.on('error', (e) => {
-    if (e.code !== 'EADDRINUSE') throw e;
+  server.on('error', (eOut) => {
+    if (eOut.code !== 'EADDRINUSE') throw eOut;
     net.connect({ path: sock }, () => {
       process.stdout.write('REPL socket already in use. Exiting.\n');
       server.close();
       process.exit(1);
-    }).on('error', (e) => {
-      if (e.code !== 'ECONNREFUSED') throw e;
+    }).on('error', (eIn) => {
+      if (eIn.code !== 'ECONNREFUSED') throw eIn;
       fs.unlinkSync(sock);
       server.listen(sock);
     });
@@ -83,13 +82,13 @@ if (useREPL) {
   /**
    * Closes the server and ends all REPL socket connections.
    */
-  function close() {
+  const close = function close() {
     sockets.forEach(socket => socket.end());
-    repls.forEach(repl => repl.end());
+    repls.forEach(r => r.end());
     sockets = [];
     repls = [];
     server.close();
-  }
+  };
 
   /**
    * Set variables in the REPL context.
@@ -97,18 +96,18 @@ if (useREPL) {
    * @param {String|Object}  key      Keyname or object containing K-V pairs
    * @param {Any}            [value]  Optional value if first param is a key
    */
-  function setContext(key, value) {
+  const setContext = function setContext(key, value) {
     if (key) {
-      const newCtx = typeof key !== 'object' ? {[key]: value} : key;
+      const newCtx = typeof key !== 'object' ? { [key]: value } : key;
       Object.assign(context, newCtx);
       repls.forEach((r) => {
-        Object.keys(newCtx).forEach((key) => {
-          const val = newCtx[key];
-          r.context[key] = typeof val === 'function' ? val.bind(r.context) : val;
+        Object.keys(newCtx).forEach((k) => {
+          const val = newCtx[k];
+          r.context[k] = typeof val === 'function' ? val.bind(r.context) : val;
         });
       });
     }
-  }
+  };
 
   /**
    * Defines a command all active and future REPLs. Uses the same API
@@ -117,24 +116,24 @@ if (useREPL) {
    * @param {String}          cmd     Command key
    * @param {Object|Function} action  Object/function describing REPL action
    */
-  function defineCommand(cmd, action) {
+  const defineCommand = function defineCommand(cmd, action) {
     repls.forEach(r => r.defineCommand(cmd, action));
     commands[cmd] = action;
-  }
+  };
 
   /**
    * Sets the REPL prompt prefix.
    *
    * @param {String}          name    Prompt name
    */
-  function setPrompt(name) {
+  const setPrompt = function setPrompt(name) {
     options.prompt = `${name} > `;
     options.name = name;
     repls.forEach((r) => {
-      r._name = name;
+      r.promptName = name;
       r.setPrompt(options.prompt);
     });
-  }
+  };
 
   module.exports = {
     setContext,
@@ -142,14 +141,11 @@ if (useREPL) {
     setPrompt,
     defineCommand,
   };
-
 } else {
-
   module.exports = {
     setContext: noop,
     close: noop,
     setPrompt: noop,
     defineCommand: noop,
   };
-
 }

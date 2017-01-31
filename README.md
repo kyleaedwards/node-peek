@@ -4,8 +4,12 @@ REPL add-on for debugging and benchmarking Node applications.
 ## Installation
 
 ```
-npm install --save-dev node-peek
+npm install --save node-peek
 ```
+
+Once installed, include `node-peek` on your main server file and run `node {SERVER_FILE} --repl`.
+
+> **DISCLAIMER**: `node-peek` creates a small Unix socket server on your running process to allow you to connect and debug live, as well as run and alter functions you choose to expose. Because this uses extra resources and could potentially be a security risk, all `node-peek` methods will default to noop and the socket server will not start without the `--repl` flag.
 
 ## Setup
 

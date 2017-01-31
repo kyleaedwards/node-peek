@@ -2,9 +2,11 @@
 
 'use strict';
 
+/* Imports */
 const net = require('net');
 
-const sock = net.connect(9731);
+/* Constants */
+const sock = net.connect('repl.sock');
 
 process.stdin.pipe(sock);
 sock.pipe(process.stdout);

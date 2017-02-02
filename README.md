@@ -10,31 +10,36 @@ REPL add-on for debugging and benchmarking Node applications.
 npm install --save node-peek
 ```
 
-Once installed, include `node-peek` on your main server file and run `node {SERVER_FILE} --repl`.
+Once installed, require `node-peek` on your main server file and run `node {SERVER_FILE} --repl`.
 
 > **DISCLAIMER**: `node-peek` creates a small Unix socket server on your running process to allow you to connect and debug live, as well as run and alter functions you choose to expose. Because this uses extra resources and could potentially be a security risk, all `node-peek` methods will default to noop and the socket server will not start without the `--repl` flag.
+
+You can then use `peek()` to expose variables to the REPL if it's running.
 
 ## Setup
 
 ```
-const Peek = require('node-peek');
+const peek = require('node-peek');
 
 /* Make variables accessible to REPL. */
-Peek.setContext('key', value);
-Peek.setContext({
+peek('key', value);
+peek({
   anotherKey: anotherValue
 });
 
+/* Console log to all REPLs */
+peek.log(obj1, obj2);
+
 /* Close REPL */
-Peek.close();
+peek.close();
 
 /* Change REPL prompt prefix. */
 // Before: $ repl >
-Peek.setPrompt('my-own-repl');
+peek.setPrompt('my-own-repl');
 // After: $ my-own-repl >
 
 /* Define custom REPL commands, identical to built-in REPL API. */
-Peek.defineCommand('savestate', () => {
+peek.defineCommand('savestate', () => {
   fs.writeFile('/tmp/statefile.json', JSON.stringify(state), () => {
     this.outputStream.write('State saved!');
   });

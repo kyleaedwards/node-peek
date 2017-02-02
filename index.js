@@ -13,7 +13,7 @@
  */
 
 /* Imports */
-const Peek = require('./lib');
+const PeekFactory = require('./lib');
 const noop = require('./lib/utils/noop');
 
 /* Constants */
@@ -22,12 +22,11 @@ const replFlag = !!process.argv.slice(2).filter(n => n === '--repl').length;
 const replEnv = process.env.REPL === 'true';
 
 if (replFlag || replEnv) {
-  module.exports = Peek(sock);
+  module.exports = PeekFactory(sock);
 } else {
-  module.exports = {
-    setContext: noop,
-    close: noop,
-    setPrompt: noop,
-    defineCommand: noop,
-  };
+  noop.close = noop;
+  noop.setPrompt = noop;
+  noop.defineCommand = noop;
+  noop.log = noop;
+  module.exports = noop;
 }

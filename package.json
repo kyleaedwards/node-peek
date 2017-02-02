@@ -1,11 +1,14 @@
 {
   "name": "node-peek",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "REPL add-on for debugging and benchmarking Node applications.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint ."
+    "check-coverage": "nyc check-coverage --statements 100 --branches 100 --functions 100 --lines 100",
+    "cover": "nyc npm test && nyc report --reporter=lcov",
+    "coveralls": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
+    "lint": "eslint .",
+    "test": "mocha --recursive"
   },
   "author": "Kyle Edwards <edwards.kyle.a@gmail.com>",
   "license": "MIT",
@@ -16,7 +19,11 @@
     "repl": "./bin/repl.js"
   },
   "devDependencies": {
+    "coveralls": "^2.11.15",
     "eslint": "^3.14.1",
-    "eslint-config-airbnb-base": "^11.0.1"
+    "eslint-config-airbnb-base": "^11.0.1",
+    "eslint-plugin-import": "^2.2.0",
+    "mocha": "^3.1.2",
+    "nyc": "^10.1.2"
   }
 }

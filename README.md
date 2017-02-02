@@ -1,6 +1,9 @@
 # node-peek
 REPL add-on for debugging and benchmarking Node applications.
 
+[![Build Status](https://travis-ci.org/kyleaedwards/node-peek.svg?branch=master)](https://travis-ci.org/kyleaedwards/node-peek)
+[![Coverage Status](https://coveralls.io/repos/github/kyleaedwards/node-peek/badge.svg?branch=master)](https://coveralls.io/github/kyleaedwards/node-peek?branch=master)
+
 ## Installation
 
 ```
@@ -38,18 +41,20 @@ Peek.defineCommand('savestate', () => {
 });
 ```
 
-## Using the REPL
+## Usage
 
 ```
 $ ./node_modules/.bin/repl
-$ repl >
-// Use like the normal Node REPL with additional helpers and
-// custom commands.
-$ repl .hsize
-$ RSS: 20619264
-$ Heap Used: 4108000
-$ Heap Total: 7319552
-$ External: 8750
+```
+
+Use like the normal Node REPL with additional helpers and custom commands.
+
+```
+$ repl > 2 + 2
+$ 4
+$
+$ repl > .hdump
+$ Heapdump written to /tmp/heap.1485844418719.heapsnapshot
 ```
 
 ### Commands

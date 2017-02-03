@@ -1,6 +1,6 @@
 {
   "name": "node-peek",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "REPL add-on for debugging and benchmarking Node applications.",
   "main": "index.js",
   "scripts": {
